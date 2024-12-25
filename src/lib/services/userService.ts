@@ -19,8 +19,7 @@ interface JwtPayload {
 }
 
 type UserData = User | null;
-
-export const getCurrentUser = async (token: string | undefined): Promise<UserData> => {
+export const getCurrentUser = async (token: string | undefined): Promise<CurrentUserDataWithoutPassword> => {
     if (!token) {
         throw new Error("No token provided");
     }
@@ -38,7 +37,6 @@ export const getCurrentUser = async (token: string | undefined): Promise<UserDat
                 name: true,
                 email: true,
                 balance: true,
-                password:false 
             },
         });
 
@@ -46,7 +44,7 @@ export const getCurrentUser = async (token: string | undefined): Promise<UserDat
             throw new Error("User not found");
         }
 
-        return currentUser 
+        return currentUser;
     } catch (error) {
         console.error("Error identifying user:", error);
         throw new Error("Authentication failed");

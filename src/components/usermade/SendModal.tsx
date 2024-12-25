@@ -81,7 +81,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, name, id }) => {
         }, 2000);
       }
     } catch (err:any) {
-      if (axios.isAxiosError(err)) {
+      if (err) {
         const errorMessage = err.response?.data?.message || 'Payment failed. Please try again.';
         setError(errorMessage);
       } else {

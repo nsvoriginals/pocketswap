@@ -1,5 +1,4 @@
-'use client';
-
+"use client"
 import React, { useEffect, useState } from 'react';
 import { useAtom } from 'jotai';
 import UserInfoAtom from '../../../store/user';
@@ -33,30 +32,22 @@ const Dashboard = () => {
 
         const headers = { Authorization: `Bearer ${token}` };
 
-        const currentUserResponse = await axios.get(
-          '/api/user/currentuser', 
-          { headers }
-        );
+        const currentUserResponse = await axios.get<User>('/api/user/currentuser', { headers }); // Typing response here
+        const userData = currentUserResponse.data;
 
-        if (currentUserResponse.data) {
-          const userData = currentUserResponse.data;
-          setUserData({
-            id: userData.id,
-            name: userData.name,
-            email: userData.email,
-            balance: userData.balance
-          });
-        }
+        setUserData({
+          id: userData.id,
+          name: userData.name,
+          email: userData.email,
+          balance: userData.balance
+        });
 
-        // Then fetch all users
-        const allUsersResponse = await axios.get(
-          '/api/user/all', 
-          { headers }
-        );
+        // Fetch all users
+        const allUsersResponse = await axios.get<{ users: User[] }>('/api/user/all', { headers }); // Typing response here
 
         if (allUsersResponse.data?.users) {
           const otherUsers = allUsersResponse.data.users.filter(
-            user => user.id !== currentUserResponse.data.id
+            user => user.id !== userData.id
           );
           setAllUsers(otherUsers);
         } else {
@@ -66,7 +57,7 @@ const Dashboard = () => {
         setError(null);
       } catch (err) {
         console.error('Error fetching data:', err);
-        if (axios.isAxiosError(err)) {
+        if ((err)) {
           setError(err.response?.data?.message || 'Failed to load data. Please try again.');
         } else {
           setError('Failed to load data. Please try again.');
